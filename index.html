@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Image</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+
+    .container {
+      position: relative;
+      text-align: center;
+    }
+
+    #mainImage {
+      display: block;
+      max-width: 80%;
+      max-height: 80vh;
+      cursor: pointer;
+    }
+
+    #hearts {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .heart {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background-color: red;
+      clip-path: polygon(50% 0%, 61% 19%, 75% 19%, 100% 38%, 86% 65%, 50% 100%, 14% 65%, 0% 38%, 25% 19%, 39% 19%);
+      pointer-events: auto;
+      animation: popIn 0.3s ease;
+      cursor: pointer;
+    }
+
+    #videoPlayer {
+      display: none;
+      margin-top: 20px;
+      max-width: 80%;
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img id="mainImage" src="new-year-image.jpg" alt="New Year Image">
+    <div id="hearts"></div>
+    <video id="videoPlayer" controls>
+      <source src="new-year-video.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const mainImage = document.getElementById("mainImage");
+      const heartsContainer = document.getElementById("hearts");
+      const videoPlayer = document.getElementById("videoPlayer");
+
+      mainImage.addEventListener("click", (e) => {
+        const rect = mainImage.getBoundingClientRect();
+
+        // Number of hearts to create per click
+        const numberOfHearts = 5;
+
+        for (let i = 0; i < numberOfHearts; i++) {
+          // Create a heart element
+          const heart = document.createElement("div");
+          heart.className = "heart";
+
+          // Randomly spread hearts near the click location
+          const randomOffsetX = Math.floor(Math.random() * 40) - 20;  // Random horizontal spread
+          const randomOffsetY = Math.floor(Math.random() * 40) - 20;  // Random vertical spread
+
+          heart.style.left = '${e.clientX - rect.left - 25 + randomOffsetX}px'; // Position heart
+          heart.style.top = '${e.clientY - rect.top - 25 + randomOffsetY}px'; // Position heart
+
+          // Add click event to the heart
+          heart.addEventListener("click", () => {
+            heartsContainer.innerHTML = ""; // Clear all hearts
+            mainImage.style.display = "none"; // Hide the image
+            videoPlayer.style.display = "block"; // Show the video
+            videoPlayer.play(); // Play the video
+          });
+
+          // Append the heart to the hearts container
+          heartsContainer.appendChild(heart);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
